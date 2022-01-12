@@ -49,8 +49,10 @@ public:
   Adafruit_InternalFlash(uint32_t start_addr, uint32_t size);
   ~Adafruit_InternalFlash() {}
 
-  bool begin(bool fakeMBR = true);
+  bool begin(void);
   bool end(void);
+
+  void fakeMBR(bool fake);
 
   uint32_t blockCount(void);
   uint32_t blockSize(void);

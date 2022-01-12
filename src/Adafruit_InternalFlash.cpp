@@ -24,10 +24,6 @@
 
 #include "Adafruit_InternalFlash.h"
 
-#ifdef USE_TINYUSB
-#include "Adafruit_TinyUSB.h"
-#endif
-
 #define BLOCK_SZ  512
 #define FAKE_MBR_PART1_START_BLOCK 1
 
@@ -38,10 +34,13 @@ Adafruit_InternalFlash::Adafruit_InternalFlash(uint32_t addr, uint32_t size) :
   _fake_mbr = true;
 }
 
-bool Adafruit_InternalFlash::begin(bool fakeMBR)
+bool Adafruit_InternalFlash::begin(void)
 {
-  _fake_mbr = fakeMBR;
   return true;
+}
+
+void Adafruit_InternalFlash::fakeMBR(bool fake) {
+  _fake_mbr = fake;
 }
 
 uint32_t Adafruit_InternalFlash::blockCount(void) {
