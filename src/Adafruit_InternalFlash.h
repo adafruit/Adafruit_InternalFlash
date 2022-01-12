@@ -52,7 +52,7 @@ public:
   bool begin(void);
   bool end(void);
 
-  void fakeMBR(bool fake);
+  uint32_t size(void);
 
   uint32_t blockCount(void);
   uint32_t blockSize(void);
@@ -68,7 +68,6 @@ public:
 private:
   uint32_t _start_addr;
   uint32_t _size;
-  bool _fake_mbr;
   FlashClass _flash;
 };
 

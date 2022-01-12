@@ -30,8 +30,6 @@
 Adafruit_InternalFlash::Adafruit_InternalFlash(uint32_t addr, uint32_t size) :
   _start_addr(addr), _size(size), _flash((const void *) addr, size)
 {
-  // default it fake MBR to match CircuitPython
-  _fake_mbr = true;
 }
 
 bool Adafruit_InternalFlash::begin(void)
@@ -39,12 +37,12 @@ bool Adafruit_InternalFlash::begin(void)
   return true;
 }
 
-void Adafruit_InternalFlash::fakeMBR(bool fake) {
-  _fake_mbr = fake;
+uint32_t Adafruit_InternalFlash::size(void) {
+  return _size;
 }
 
 uint32_t Adafruit_InternalFlash::blockCount(void) {
-  return _size/BLOCK_SZ + (_fake_mbr ? 1 : 0);
+  return _size/BLOCK_SZ;
 }
 
 uint32_t Adafruit_InternalFlash::blockSize(void) {
@@ -53,10 +51,6 @@ uint32_t Adafruit_InternalFlash::blockSize(void) {
 
 uint32_t Adafruit_InternalFlash::block2addr(uint32_t block)
 {
-  // adjust block address if we are faking MBR
-  // flash contents are data only without mbr
-  if (_fake_mbr) block--;
-
   return _start_addr + block*BLOCK_SZ;
 }
 
@@ -64,10 +58,6 @@ uint32_t Adafruit_InternalFlash::block2addr(uint32_t block)
 // SdFat BaseBlockDRiver API
 // A block is 512 bytes
 //--------------------------------------------------------------------+
-
-static void build_partition(uint8_t *buf, int boot, int type, uint32_t start_block, uint32_t num_blocks);
-static void build_fake_mbr(uint8_t* dest, uint32_t num_blocks);
-
 bool Adafruit_InternalFlash::readBlock(uint32_t block, uint8_t *dst) {
   return readBlocks(block, dst, 1);
 }
@@ -82,94 +72,16 @@ bool Adafruit_InternalFlash::syncBlocks(){
 }
 
 bool Adafruit_InternalFlash::readBlocks(uint32_t block, uint8_t *dst, size_t nb) {
-  if (_fake_mbr && block == 0) {
-    build_fake_mbr(dst, _size/BLOCK_SZ);
-
-    // adjust parameters for non-mbr
-    block++;
-    dst += BLOCK_SZ;
-    nb--;
-
-    // nothing more to read
-    if (nb == 0) return true;
-  }
-
   uint32_t const addr = block2addr(block);
   memcpy(dst, (void const*) addr, nb*BLOCK_SZ);
-
   return true;
 }
 
 bool Adafruit_InternalFlash::writeBlocks(uint32_t block, const uint8_t *src, size_t nb) {
   // since block size 512 is larger than 256 byte row size of SAMD21, we don't need any caching
-
-  if (_fake_mbr && block == 0) {
-    // can't write MBR, but pretend we did and adjust parameters for non-mbr
-    block++;
-    src += BLOCK_SZ;
-    nb--;
-
-    // nothing more to write
-    if (nb == 0) return true;
-  }
-
   const volatile void * fl_ptr = (const volatile void *) block2addr(block);
-
   _flash.erase(fl_ptr, nb*BLOCK_SZ);
   _flash.write(fl_ptr, src, nb*BLOCK_SZ);
 
   return true;
-}
-
-// fake the mbr
-static void build_fake_mbr(uint8_t* dest, uint32_t num_blocks)
-{
-  for (int i = 0; i < 446; i++) {
-    dest[i] = 0;
-  }
-
-  build_partition(dest + 446, 0, 0x01 /* FAT12 */, FAKE_MBR_PART1_START_BLOCK, num_blocks);
-  build_partition(dest + 462, 0, 0, 0, 0);
-  build_partition(dest + 478, 0, 0, 0, 0);
-  build_partition(dest + 494, 0, 0, 0, 0);
-
-  dest[510] = 0x55;
-  dest[511] = 0xaa;
-}
-
-// Helper to build a partition in a fake MBR
-static void build_partition(uint8_t *buf, int boot, int type, uint32_t start_block, uint32_t num_blocks) {
-  buf[0] = boot;
-
-  if (num_blocks == 0) {
-      buf[1] = 0;
-      buf[2] = 0;
-      buf[3] = 0;
-  } else {
-      buf[1] = 0xff;
-      buf[2] = 0xff;
-      buf[3] = 0xff;
-  }
-
-  buf[4] = type;
-
-  if (num_blocks == 0) {
-      buf[5] = 0;
-      buf[6] = 0;
-      buf[7] = 0;
-  } else {
-      buf[5] = 0xff;
-      buf[6] = 0xff;
-      buf[7] = 0xff;
-  }
-
-  buf[8] = start_block;
-  buf[9] = start_block >> 8;
-  buf[10] = start_block >> 16;
-  buf[11] = start_block >> 24;
-
-  buf[12] = num_blocks;
-  buf[13] = num_blocks >> 8;
-  buf[14] = num_blocks >> 16;
-  buf[15] = num_blocks >> 24;
 }

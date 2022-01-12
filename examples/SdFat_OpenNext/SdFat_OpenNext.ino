@@ -32,10 +32,6 @@ void setup() {
   // Init internal flash
   flash.begin();
 
-  // fakeMBR to be compatible with CircuitPython
-  // default mode but set here for reference
-  flash.fakeMBR(true);
-
   // Init file system on the flash
   fatfs.begin(&flash);
   

@@ -51,9 +51,9 @@ void setup() {
   // Init internal flash
   flash.begin();
 
-  static const uint32_t pageSizes[] = { 8, 16, 32, 64, 128, 256, 512, 1024 };
-  uint32_t page_size = pageSizes[NVMCTRL->PARAM.bit.PSZ];
-  Serial.printf("Page size: %u, Row size: %u\r\n", page_size, page_size*4);
+//  static const uint32_t pageSizes[] = { 8, 16, 32, 64, 128, 256, 512, 1024 };
+//  uint32_t page_size = pageSizes[NVMCTRL->PARAM.bit.PSZ];
+//  Serial.printf("Page size: %u, Row size: %u\r\n", page_size, page_size*4);
 
   // Open file system on the flash
   if ( !fatfs.begin(&flash) ) {
