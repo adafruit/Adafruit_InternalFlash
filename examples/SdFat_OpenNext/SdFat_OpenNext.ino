@@ -5,7 +5,8 @@
 #include "SdFat.h"
 #include "Adafruit_InternalFlash.h"
 
-// Start address and size matche value in the CircuitPython (INTERNAL_FLASH_FILESYSTEM = 1)
+// Start address and size should matches value in the CircuitPython (INTERNAL_FLASH_FILESYSTEM = 1)
+// to make it easier to switch between Arduino and CircuitPython
 #define INTERNAL_FLASH_FILESYSTEM_START_ADDR  (0x00040000 - 256 - 0 - INTERNAL_FLASH_FILESYSTEM_SIZE)
 #define INTERNAL_FLASH_FILESYSTEM_SIZE        (64*1024)
 
