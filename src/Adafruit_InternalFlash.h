@@ -54,10 +54,6 @@ public:
 
   uint32_t size(void);
 
-  uint32_t blockCount(void);
-  uint32_t blockSize(void);
-  uint32_t block2addr(uint32_t block);
-
   //------------- SdFat BaseBlockDRiver API -------------//
   virtual bool readBlock(uint32_t block, uint8_t *dst);
   virtual bool writeBlock(uint32_t block, const uint8_t *src);
@@ -66,6 +62,8 @@ public:
   virtual bool writeBlocks(uint32_t block, const uint8_t *src, size_t nb);
 
 private:
+  uint32_t block2addr(uint32_t block);
+
   uint32_t _start_addr;
   uint32_t _size;
   FlashClass _flash;

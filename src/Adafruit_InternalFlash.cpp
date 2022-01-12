@@ -41,14 +41,6 @@ uint32_t Adafruit_InternalFlash::size(void) {
   return _size;
 }
 
-uint32_t Adafruit_InternalFlash::blockCount(void) {
-  return _size/BLOCK_SZ;
-}
-
-uint32_t Adafruit_InternalFlash::blockSize(void) {
-  return BLOCK_SZ;
-}
-
 uint32_t Adafruit_InternalFlash::block2addr(uint32_t block)
 {
   return _start_addr + block*BLOCK_SZ;
