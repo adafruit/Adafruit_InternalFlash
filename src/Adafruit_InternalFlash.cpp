@@ -34,6 +34,7 @@ Adafruit_InternalFlash::Adafruit_InternalFlash(uint32_t addr, uint32_t size) :
 
 bool Adafruit_InternalFlash::begin(void)
 {
+  // nothing to do
   return true;
 }
 
