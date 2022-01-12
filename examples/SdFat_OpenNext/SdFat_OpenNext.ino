@@ -1,6 +1,13 @@
 /*
  * Print size, modify date/time, and name for all files in root.
  */
+
+/*********************************************************************
+ Adafruit invests time and resources providing this open source code,
+ please support Adafruit and open-source hardware by purchasing
+ products from Adafruit!
+*********************************************************************/
+
 #include <SPI.h>
 #include "SdFat.h"
 #include "Adafruit_InternalFlash.h"

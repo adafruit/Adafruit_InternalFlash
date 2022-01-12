@@ -19,6 +19,12 @@
 //   the board reset buttton, wait a few seconds, then open the
 //   serial monitor again.
 
+/*********************************************************************
+ Adafruit invests time and resources providing this open source code,
+ please support Adafruit and open-source hardware by purchasing
+ products from Adafruit!
+*********************************************************************/
+
 #include <SPI.h>
 #include <SdFat.h>
 #include "Adafruit_InternalFlash.h"
@@ -44,7 +50,7 @@ void setup() {
   }
   Serial.println("Adafruit Internal Flash FatFs Simple File Printing Example");
 
-  // Initialize flash library and check its chip ID.
+  // Initialize internal flash
   if (!flash.begin()) {
     Serial.println("Error, failed to initialize flash chip!");
     while(1) delay(1);

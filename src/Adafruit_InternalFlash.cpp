@@ -77,7 +77,7 @@ bool Adafruit_InternalFlash::writeBlock(uint32_t block, const uint8_t *src) {
 }
 
 bool Adafruit_InternalFlash::syncBlocks(){
-  // nothing to do
+  // since block size 512 is larger than 256 byte row size of SAMD21, we don't need any caching
   return true;
 }
 
@@ -101,7 +101,24 @@ bool Adafruit_InternalFlash::readBlocks(uint32_t block, uint8_t *dst, size_t nb)
 }
 
 bool Adafruit_InternalFlash::writeBlocks(uint32_t block, const uint8_t *src, size_t nb) {
-  return false;
+  // since block size 512 is larger than 256 byte row size of SAMD21, we don't need any caching
+
+  if (_fake_mbr && block == 0) {
+    // can't write MBR, but pretend we did and adjust parameters for non-mbr
+    block++;
+    src += BLOCK_SZ;
+    nb--;
+
+    // nothing more to write
+    if (nb == 0) return true;
+  }
+
+  const volatile void * fl_ptr = (const volatile void *) block2addr(block);
+
+  _flash.erase(fl_ptr, nb*BLOCK_SZ);
+  _flash.write(fl_ptr, src, nb*BLOCK_SZ);
+
+  return true;
 }
 
 // fake the mbr
