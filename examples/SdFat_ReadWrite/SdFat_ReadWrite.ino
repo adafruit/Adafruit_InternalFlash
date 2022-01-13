@@ -1,17 +1,16 @@
 /*
-  SD card read/write
+  Internal Flash read/write
 
- This example shows how to read and write data to and from an SD card file
+ This example shows how to read and write data to and from internal flash
  The circuit:
  * SD card attached to SPI bus as follows:
  ** MOSI - pin 11
  ** MISO - pin 12
  ** CLK - pin 13
 
- created   Nov 2010
- by David A. Mellis
- modified 9 Apr 2012
- by Tom Igoe
+ created   Nov 2010 by David A. Mellis
+ modified 9 Apr 2012 by Tom Igoe
+ modified 13 Jan 2021 by Ha Thach
 
  This example code is in the public domain.
 

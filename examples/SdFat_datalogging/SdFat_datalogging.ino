@@ -1,5 +1,5 @@
-// Adafruit SPI Flash FatFs Simple Datalogging Example
-// Author: Tony DiCola
+// Adafruit Internal Flash FatFs Simple Datalogging Example
+// Author: Tony DiCola, Ha Thach
 //
 // This is a simple dataloging example using the SPI Flash
 // FatFs library.  The example will open a file on the SPI

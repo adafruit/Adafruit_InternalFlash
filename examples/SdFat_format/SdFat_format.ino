@@ -1,5 +1,5 @@
 // Adafruit Internal Flash FatFs Format Example
-// Author: Tony DiCola
+// Author: Tony DiCola, Ha Thach
 //
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 // !!  NOTE: YOU WILL ERASE ALL DATA BY RUNNING THIS SKETCH!  !!
