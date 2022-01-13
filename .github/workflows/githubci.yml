@@ -35,8 +35,8 @@ jobs:
       # skip clang for fatfs (ff) to make it easier to compare and upgrade
       run: python3 ci/run-clang-format.py -e "ci/*" -e "bin/*" -e "./examples/SdFat_format/*" -r .
 
-    - name: doxygen
-      env:
-        GH_REPO_TOKEN: ${{ secrets.GH_REPO_TOKEN }}
-        PRETTYNAME : "Adafruit SPIFlash Library"
-      run: bash ci/doxy_gen_and_deploy.sh
+    #- name: doxygen
+    #  env:
+    #    GH_REPO_TOKEN: ${{ secrets.GH_REPO_TOKEN }}
+    #    PRETTYNAME : "Adafruit InternalFlash Library"
+    #  run: bash ci/doxy_gen_and_deploy.sh
