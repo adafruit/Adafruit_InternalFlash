@@ -25,7 +25,6 @@
 #include "Adafruit_InternalFlash.h"
 
 #define BLOCK_SZ  512
-#define FAKE_MBR_PART1_START_BLOCK 1
 
 Adafruit_InternalFlash::Adafruit_InternalFlash(uint32_t addr, uint32_t size) :
   _start_addr(addr), _size(size), _flash((const void *) addr, size)
