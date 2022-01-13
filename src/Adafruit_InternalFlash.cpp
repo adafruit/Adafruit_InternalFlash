@@ -1,4 +1,4 @@
-/* 
+/*
  * The MIT License (MIT)
  *
  * Copyright (c) 2022 Ha Thach (tinyusb.org) for Adafruit Industries
@@ -24,26 +24,20 @@
 
 #include "Adafruit_InternalFlash.h"
 
-#define BLOCK_SZ  512
+#define BLOCK_SZ 512
 
-Adafruit_InternalFlash::Adafruit_InternalFlash(uint32_t addr, uint32_t size) :
-  _start_addr(addr), _size(size), _flash((const void *) addr, size)
-{
-}
+Adafruit_InternalFlash::Adafruit_InternalFlash(uint32_t addr, uint32_t size)
+    : _start_addr(addr), _size(size), _flash((const void *)addr, size) {}
 
-bool Adafruit_InternalFlash::begin(void)
-{
+bool Adafruit_InternalFlash::begin(void) {
   // nothing to do
   return true;
 }
 
-uint32_t Adafruit_InternalFlash::size(void) {
-  return _size;
-}
+uint32_t Adafruit_InternalFlash::size(void) { return _size; }
 
-uint32_t Adafruit_InternalFlash::block2addr(uint32_t block)
-{
-  return _start_addr + block*BLOCK_SZ;
+uint32_t Adafruit_InternalFlash::block2addr(uint32_t block) {
+  return _start_addr + block * BLOCK_SZ;
 }
 
 //--------------------------------------------------------------------+
@@ -58,22 +52,26 @@ bool Adafruit_InternalFlash::writeBlock(uint32_t block, const uint8_t *src) {
   return writeBlocks(block, src, 1);
 }
 
-bool Adafruit_InternalFlash::syncBlocks(){
-  // since block size 512 is larger than 256 byte row size of SAMD21, we don't need any caching
+bool Adafruit_InternalFlash::syncBlocks() {
+  // since block size 512 is larger than 256 byte row size of SAMD21, we don't
+  // need any caching
   return true;
 }
 
-bool Adafruit_InternalFlash::readBlocks(uint32_t block, uint8_t *dst, size_t nb) {
+bool Adafruit_InternalFlash::readBlocks(uint32_t block, uint8_t *dst,
+                                        size_t nb) {
   uint32_t const addr = block2addr(block);
-  memcpy(dst, (void const*) addr, nb*BLOCK_SZ);
+  memcpy(dst, (void const *)addr, nb * BLOCK_SZ);
   return true;
 }
 
-bool Adafruit_InternalFlash::writeBlocks(uint32_t block, const uint8_t *src, size_t nb) {
-  // since block size 512 is larger than 256 byte row size of SAMD21, we don't need any caching
-  const volatile void * fl_ptr = (const volatile void *) block2addr(block);
-  _flash.erase(fl_ptr, nb*BLOCK_SZ);
-  _flash.write(fl_ptr, src, nb*BLOCK_SZ);
+bool Adafruit_InternalFlash::writeBlocks(uint32_t block, const uint8_t *src,
+                                         size_t nb) {
+  // since block size 512 is larger than 256 byte row size of SAMD21, we don't
+  // need any caching
+  const volatile void *fl_ptr = (const volatile void *)block2addr(block);
+  _flash.erase(fl_ptr, nb * BLOCK_SZ);
+  _flash.write(fl_ptr, src, nb * BLOCK_SZ);
 
   return true;
 }
