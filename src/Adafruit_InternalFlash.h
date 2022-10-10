@@ -27,39 +27,98 @@
 
 // implement SdFat Block Driver
 #include "SdFat.h"
-#include "SdFatConfig.h"
 
 // FlashStorage for flashing for SAMD MCUs
 #ifdef ARDUINO_ARCH_SAMD
 #include "FlashStorage.h"
 #endif
 
-#if ENABLE_EXTENDED_TRANSFER_CLASS == 0
-#error ENABLE_EXTENDED_TRANSFER_CLASS must be set to 1 in SdFat SdFatConfig.h
+#if SD_FAT_VERSION >= 20000
+
+#if USE_BLOCK_DEVICE_INTERFACE == 0
+#error USE_BLOCK_DEVICE_INTERFACE must be defined to 1 in SdFatConfig.h. Alternatively you can use the Adafruit Fork at 'https://github.com/adafruit/SdFat' which already set this to 1
 #endif
 
+// Try our best to be Backward-compatible with v1
+#ifndef ENABLE_EXTENDED_TRANSFER_CLASS
+#define ENABLE_EXTENDED_TRANSFER_CLASS USE_BLOCK_DEVICE_INTERFACE
+#endif
+
+#ifndef BaseBlockDriver
+#define BaseBlockDriver FsBlockDeviceInterface
+#endif
+
+#ifndef FatFileSystem
+#define FatFileSystem FatVolume
+#endif
+
+// #define File          File32     // type conflict with other generic File
+
+#else
+
+#if ENABLE_EXTENDED_TRANSFER_CLASS == 0
+#error ENABLE_EXTENDED_TRANSFER_CLASS must be set to 1 in SdFatConfig.h. Alternatively you can use the Adafruit Fork at 'https://github.com/adafruit/SdFat' which already set this to 1
+#endif
+
+// Try our best to be forward-compatible with v2
+#ifndef FsBlockDeviceInterface
+#define FsBlockDeviceInterface BaseBlockDriver
+#endif
+
+#ifndef FatVolume
+#define FatVolume FatFileSystem
+#endif
+
+#ifndef File32
+#define File32 File
+#endif
+
+#endif // SD_FAT_VERSION
+
 #if FAT12_SUPPORT == 0
-#error FAT12_SUPPORT must be set to 1 in SdFat SdFatConfig.h
+#error FAT12_SUPPORT must be set to 1 in SdFat SdFatConfig.h. Alternatively you can use the Adafruit Fork at 'https://github.com/adafruit/SdFat' which already set this to 1
 #endif
 
 // This class adds support for the BaseBlockDriver interface.
 // This allows it to be used with SdFat's FatFileSystem class.
-class Adafruit_InternalFlash : public BaseBlockDriver {
+class Adafruit_InternalFlash : public FsBlockDeviceInterface {
 public:
   Adafruit_InternalFlash(uint32_t start_addr, uint32_t size);
   ~Adafruit_InternalFlash() {}
 
   bool begin(void);
-  bool end(void);
+  void end(void);
 
   uint32_t size(void);
 
-  //------------- SdFat BaseBlockDRiver API -------------//
-  virtual bool readBlock(uint32_t block, uint8_t *dst);
-  virtual bool writeBlock(uint32_t block, const uint8_t *src);
-  virtual bool syncBlocks();
-  virtual bool readBlocks(uint32_t block, uint8_t *dst, size_t nb);
-  virtual bool writeBlocks(uint32_t block, const uint8_t *src, size_t nb);
+  //------------- SdFat v2 FsBlockDeviceInterface API -------------//
+  virtual bool isBusy();
+  virtual uint32_t sectorCount();
+  virtual bool syncDevice();
+
+  virtual bool readSector(uint32_t block, uint8_t *dst);
+  virtual bool readSectors(uint32_t block, uint8_t *dst, size_t ns);
+  virtual bool writeSector(uint32_t block, const uint8_t *src);
+  virtual bool writeSectors(uint32_t block, const uint8_t *src, size_t ns);
+
+  // SdFat v1 BaseBlockDRiver API for backward-compatible
+  virtual bool syncBlocks() { return syncDevice(); }
+
+  virtual bool readBlock(uint32_t block, uint8_t *dst) {
+    return readSector(block, dst);
+  }
+
+  virtual bool readBlocks(uint32_t block, uint8_t *dst, size_t nb) {
+    return readSectors(block, dst, nb);
+  }
+
+  virtual bool writeBlock(uint32_t block, const uint8_t *src) {
+    return writeSector(block, src);
+  }
+
+  virtual bool writeBlocks(uint32_t block, const uint8_t *src, size_t nb) {
+    return writeSectors(block, src, nb);
+  }
 
 private:
   uint32_t block2addr(uint32_t block);

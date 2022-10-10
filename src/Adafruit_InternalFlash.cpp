@@ -34,7 +34,18 @@ bool Adafruit_InternalFlash::begin(void) {
   return true;
 }
 
+void Adafruit_InternalFlash::end(void) {
+
+}
+
 uint32_t Adafruit_InternalFlash::size(void) { return _size; }
+
+uint32_t Adafruit_InternalFlash::sectorCount(void) { return _size / BLOCK_SZ; }
+
+bool Adafruit_InternalFlash::isBusy(void) {
+  // always ready since internal flash operation is blocking.
+  return true;
+}
 
 uint32_t Adafruit_InternalFlash::block2addr(uint32_t block) {
   return _start_addr + block * BLOCK_SZ;
@@ -44,28 +55,28 @@ uint32_t Adafruit_InternalFlash::block2addr(uint32_t block) {
 // SdFat BaseBlockDRiver API
 // A block is 512 bytes
 //--------------------------------------------------------------------+
-bool Adafruit_InternalFlash::readBlock(uint32_t block, uint8_t *dst) {
-  return readBlocks(block, dst, 1);
+bool Adafruit_InternalFlash::readSector(uint32_t block, uint8_t *dst) {
+  return readSectors(block, dst, 1);
 }
 
-bool Adafruit_InternalFlash::writeBlock(uint32_t block, const uint8_t *src) {
-  return writeBlocks(block, src, 1);
+bool Adafruit_InternalFlash::writeSector(uint32_t block, const uint8_t *src) {
+  return writeSectors(block, src, 1);
 }
 
-bool Adafruit_InternalFlash::syncBlocks() {
+bool Adafruit_InternalFlash::syncDevice() {
   // since block size 512 is larger than 256 byte row size of SAMD21, we don't
   // need any caching
   return true;
 }
 
-bool Adafruit_InternalFlash::readBlocks(uint32_t block, uint8_t *dst,
+bool Adafruit_InternalFlash::readSectors(uint32_t block, uint8_t *dst,
                                         size_t nb) {
   uint32_t const addr = block2addr(block);
   memcpy(dst, (void const *)addr, nb * BLOCK_SZ);
   return true;
 }
 
-bool Adafruit_InternalFlash::writeBlocks(uint32_t block, const uint8_t *src,
+bool Adafruit_InternalFlash::writeSectors(uint32_t block, const uint8_t *src,
                                          size_t nb) {
   // since block size 512 is larger than 256 byte row size of SAMD21, we don't
   // need any caching
