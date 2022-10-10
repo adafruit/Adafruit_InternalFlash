@@ -34,9 +34,7 @@ bool Adafruit_InternalFlash::begin(void) {
   return true;
 }
 
-void Adafruit_InternalFlash::end(void) {
-
-}
+void Adafruit_InternalFlash::end(void) {}
 
 uint32_t Adafruit_InternalFlash::size(void) { return _size; }
 
@@ -70,14 +68,14 @@ bool Adafruit_InternalFlash::syncDevice() {
 }
 
 bool Adafruit_InternalFlash::readSectors(uint32_t block, uint8_t *dst,
-                                        size_t nb) {
+                                         size_t nb) {
   uint32_t const addr = block2addr(block);
   memcpy(dst, (void const *)addr, nb * BLOCK_SZ);
   return true;
 }
 
 bool Adafruit_InternalFlash::writeSectors(uint32_t block, const uint8_t *src,
-                                         size_t nb) {
+                                          size_t nb) {
   // since block size 512 is larger than 256 byte row size of SAMD21, we don't
   // need any caching
   const volatile void *fl_ptr = (const volatile void *)block2addr(block);
