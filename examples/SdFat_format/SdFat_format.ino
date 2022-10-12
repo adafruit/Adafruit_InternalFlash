@@ -70,7 +70,7 @@ void setup() {
   Serial.println("Creating and formatting FAT filesystem (this takes ~60 seconds)...");
 
   // Make filesystem.
-  FRESULT r = f_mkfs("", FM_FAT | FM_SFD, 0, workbuf, sizeof(workbuf));
+  FRESULT r = f_mkfs("", FM_FAT, 0, workbuf, sizeof(workbuf));
   if (r != FR_OK) {
     Serial.print("Error, f_mkfs failed with error code: "); Serial.println(r, DEC);
     while(1) yield();

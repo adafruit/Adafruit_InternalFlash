@@ -36,28 +36,13 @@
 #if SD_FAT_VERSION >= 20000
 
 #if USE_BLOCK_DEVICE_INTERFACE == 0
-#error USE_BLOCK_DEVICE_INTERFACE must be defined to 1 in SdFatConfig.h. Alternatively you can use the Adafruit Fork at 'https://github.com/adafruit/SdFat' which already set this to 1
+#error USE_BLOCK_DEVICE_INTERFACE must be defined to 1 in SdFatConfig.h. Make sure you use the Adafruit Fork at 'https://github.com/adafruit/SdFat'
 #endif
-
-// Try our best to be Backward-compatible with v1
-#ifndef ENABLE_EXTENDED_TRANSFER_CLASS
-#define ENABLE_EXTENDED_TRANSFER_CLASS USE_BLOCK_DEVICE_INTERFACE
-#endif
-
-#ifndef BaseBlockDriver
-#define BaseBlockDriver FsBlockDeviceInterface
-#endif
-
-#ifndef FatFileSystem
-#define FatFileSystem FatVolume
-#endif
-
-// #define File          File32     // type conflict with other generic File
 
 #else
 
 #if ENABLE_EXTENDED_TRANSFER_CLASS == 0
-#error ENABLE_EXTENDED_TRANSFER_CLASS must be set to 1 in SdFatConfig.h. Alternatively you can use the Adafruit Fork at 'https://github.com/adafruit/SdFat' which already set this to 1
+#error ENABLE_EXTENDED_TRANSFER_CLASS must be set to 1 in SdFatConfig.h. Make sure you use the Adafruit Fork at 'https://github.com/adafruit/SdFat'
 #endif
 
 // Try our best to be forward-compatible with v2
@@ -76,7 +61,7 @@
 #endif // SD_FAT_VERSION
 
 #if FAT12_SUPPORT == 0
-#error FAT12_SUPPORT must be set to 1 in SdFat SdFatConfig.h. Alternatively you can use the Adafruit Fork at 'https://github.com/adafruit/SdFat' which already set this to 1
+#error FAT12_SUPPORT must be set to 1 in SdFat SdFatConfig.h. Make sure you use the Adafruit Fork at 'https://github.com/adafruit/SdFat'
 #endif
 
 // This class adds support for the BaseBlockDriver interface.
