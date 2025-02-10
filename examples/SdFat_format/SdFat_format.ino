@@ -23,7 +23,10 @@
 #include "Adafruit_InternalFlash.h"
 
 // Since SdFat doesn't fully support FAT12 such as format a new flash
-// We will use Elm Cham's fatfs f_mkfs() to format
+// We will use Elm Cham's fatfs f_mkfs() to format. Note:
+// - FM_FAT: create with MBR (63 sectors). For CircuitPython compatibility, this is preferred since CPY simulate MBR.
+// However, disk size maybe need to be at least 192 sector (96KB)
+// - FM_FAT | FM_SFD: create without MBR, save 63 sectors. Disk size can be 128 sector (64KB).
 #include "ff.h"
 #include "diskio.h"
 
@@ -69,8 +72,8 @@ void setup() {
   // Call fatfs begin and passed flash object to initialize file system
   Serial.println("Creating and formatting FAT filesystem (this takes ~60 seconds)...");
 
-  // Make filesystem.
-  FRESULT r = f_mkfs("", FM_FAT, 0, workbuf, sizeof(workbuf));
+  // Make filesystem: change FM_SFD (above note) to match your usage
+  FRESULT r = f_mkfs("", FM_FAT | FM_SFD, 0, workbuf, sizeof(workbuf));
   if (r != FR_OK) {
     Serial.print("Error, f_mkfs failed with error code: "); Serial.println(r, DEC);
     while(1) yield();
